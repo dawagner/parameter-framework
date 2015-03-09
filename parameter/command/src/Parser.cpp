@@ -247,7 +247,7 @@ const Parser::CommandHandler::RemoteCommandParserItems Parser::gRemoteCommandPar
 };
 
 Parser::Parser(CParameterMgr& parameterMgr) :
-    mParameterMgr(parameterMgr), mCommandHandler(CommandHandler(this, gRemoteCommandParserItems))
+    mParameterMgr(parameterMgr), mCommandHandler(CommandHandler(*this, gRemoteCommandParserItems))
 {
 }
 
