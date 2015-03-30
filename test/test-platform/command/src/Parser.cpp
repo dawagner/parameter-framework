@@ -46,16 +46,18 @@ const Parser::CommandHandler::RemoteCommandParserItems Parser::gRemoteCommandPar
       { &Parser::exit, 0, "",
         "Exit TestPlatform" } },
     { "createExclusiveCriterionFromStateList",
-      { &Parser::createExclusiveCriterionFromStateList, 2, "<name> <stateList>",
-          "Create inclusive selection criterion from state name list" } },
+      { &Parser::createCriterionFromStateList<
+          &CTestPlatform::createExclusiveCriterionFromStateList>, 2, "<name> <stateList>",
+        "Create inclusive selection criterion from state name list" } },
     { "createInclusiveCriterionFromStateList",
-      { &Parser::createInclusiveCriterionFromStateList, 2, "<name> <stateList>",
+      { &Parser::createCriterionFromStateList<
+          &CTestPlatform::createInclusiveCriterionFromStateList>, 2, "<name> <stateList>",
         "Create exclusive selection criterion from state name list" } },
     { "createExclusiveCriterion",
-      { &Parser::createExclusiveCriterion, 2, "<name> <nbStates>",
+      { &Parser::createCriterion<&CTestPlatform::createExclusiveCriterion>, 2, "<name> <nbStates>",
         "Create inclusive selection criterion" } },
     { "createInclusiveCriterion",
-      { &Parser::createInclusiveCriterion, 2, "<name> <nbStates>",
+      { &Parser::createCriterion<&CTestPlatform::createInclusiveCriterion>, 2, "<name> <nbStates>",
         "Create exclusive selection criterion" } },
     { "start",
       { &Parser::startParameterMgr, 0, "",
@@ -109,43 +111,21 @@ Parser::CommandReturn Parser::exit(const IRemoteCommand&, std::string&)
     return Parser::CommandHandler::EDone;
 }
 
-Parser::CommandReturn
-Parser::createExclusiveCriterionFromStateList(const IRemoteCommand& remoteCommand,
-                                                       std::string& strResult)
+template<Parser::CreateCriterionFromStateList factory>
+Parser::CommandReturn Parser::createCriterionFromStateList(const IRemoteCommand& remoteCommand,
+                                                           std::string& strResult)
 {
-    return mTestPlatform.createExclusiveCriterionFromStateList(
-        remoteCommand.getArgument(0), remoteCommand, strResult) ?
+    return (mTestPlatform.*factory)(remoteCommand.getArgument(0), remoteCommand, strResult) ?
            Parser::CommandHandler::EDone : Parser::CommandHandler::EFailed;
 }
 
-Parser::CommandReturn
-Parser::createInclusiveCriterionFromStateList(const IRemoteCommand& remoteCommand,
-                                                       std::string& strResult)
+template<Parser::CreateCriterion factory>
+Parser::CommandReturn Parser::createCriterion(const IRemoteCommand& remoteCommand,
+                                              std::string& strResult)
 {
-    return mTestPlatform.createInclusiveCriterionFromStateList(
-        remoteCommand.getArgument(0), remoteCommand, strResult) ?
-           Parser::CommandHandler::EDone : Parser::CommandHandler::EFailed;
-}
-
-Parser::CommandReturn
-Parser::createExclusiveCriterion(const IRemoteCommand& remoteCommand,
-                                          std::string& strResult)
-{
-    return mTestPlatform.createExclusiveCriterion(
-        remoteCommand.getArgument(0),
-        strtoul(remoteCommand.getArgument(1).c_str(), NULL, 0),
-        strResult) ?
-           Parser::CommandHandler::EDone : Parser::CommandHandler::EFailed;
-}
-
-Parser::CommandReturn
-Parser::createInclusiveCriterion(const IRemoteCommand& remoteCommand,
-                                          std::string& strResult)
-{
-    return mTestPlatform.createInclusiveCriterion(
-        remoteCommand.getArgument(0),
-        strtoul(remoteCommand.getArgument(1).c_str(), NULL, 0),
-        strResult) ?
+    return (mTestPlatform.*factory)(remoteCommand.getArgument(0),
+                                    strtoul(remoteCommand.getArgument(1).c_str(), NULL, 0),
+                                    strResult) ?
            Parser::CommandHandler::EDone : Parser::CommandHandler::EFailed;
 }
 
