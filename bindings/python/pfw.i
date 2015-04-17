@@ -53,9 +53,11 @@ namespace std {
     %template(StringVector) vector<string>;
 }
 
-// Tells swig that 'std::string& strError' must be treated as output parameters
+// Tells swig that 'std::string& strError' 'std::string& errorOutput' must be
+// treated as output parameters
 // TODO: make it return a tuple instead of a list
 %apply std::string &OUTPUT { std::string& strError };
+%apply std::string &OUTPUT { std::string& errorOutput };
 
 // Automatic python docstring generation
 // FIXME: because of the typemap above, the output type is wrong for methods
@@ -81,10 +83,14 @@ public:
     void setLogger(ILogger* pLogger);
 
     core::criterion::CriterionInterface*
-    createExclusiveCriterion(const std::string& name);
+    createExclusiveCriterion(const std::string& name,
+                             const core::criterion::CriterionInterface::Values& values,
+                             std::string& errorOutput);
 
     core::criterion::CriterionInterface*
-    createInclusiveCriterion(const std::string& name);
+    createInclusiveCriterion(const std::string& name,
+                             const core::criterion::CriterionInterface::Values& values,
+                             std::string& errorOutput);
 
     core::criterion::CriterionInterface*
     getSelectionCriterion(const std::string& name);
@@ -212,9 +218,6 @@ public:
     virtual void setCriterionState(int iState) = 0;
     virtual int getCriterionState() const = 0;
     virtual std::string getCriterionName() const = 0;
-    virtual bool addValuePair(int numericalValue,
-                              const std::string& literalValue,
-                              std::string& strError) = 0;
 %apply int &OUTPUT { int& numericalValue };
     virtual bool getNumericalValue(const std::string& literalValue, int& numericalValue) const = 0;
 %clear int& numericalValue;

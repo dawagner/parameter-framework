@@ -84,14 +84,20 @@ CParameterHandle* CParameterMgrFullConnector::createParameterHandle(const string
     return _pParameterMgr->createParameterHandle(strPath, strError);
 }
 
-CriterionInterface* CParameterMgrFullConnector::createExclusiveCriterion(const string& name)
+CriterionInterface*
+CParameterMgrFullConnector::createExclusiveCriterion(const string& name,
+                                                     const CriterionInterface::Values& values,
+                                                     std::string& error)
 {
-    return _pParameterMgr->createExclusiveCriterion(name);
+    return _pParameterMgr->createExclusiveCriterion(name, values, error);
 }
 
-CriterionInterface* CParameterMgrFullConnector::createInclusiveCriterion(const string& name)
+CriterionInterface*
+CParameterMgrFullConnector::createInclusiveCriterion(const string& name,
+                                                     const CriterionInterface::Values& values,
+                                                     std::string& error)
 {
-    return _pParameterMgr->createInclusiveCriterion(name);
+    return _pParameterMgr->createInclusiveCriterion(name, values, error);
 }
 
 CriterionInterface* CParameterMgrFullConnector::getSelectionCriterion(

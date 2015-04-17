@@ -30,6 +30,7 @@
 #pragma once
 
 #include <string>
+#include <map>
 
 namespace core
 {
@@ -42,20 +43,12 @@ namespace criterion
 class CriterionInterface
 {
 public:
+    /** Type which associate literal and numerical value */
+    using Values = std::map<std::string, int>;
+
     virtual void setCriterionState(int iState) = 0;
     virtual int getCriterionState() const = 0;
     virtual std::string getCriterionName() const = 0;
-
-    /** Add a new pair [literal, numerical] which represents a criterion
-     *
-     * @param[in] numericalValue the numerical value of the criterion
-     * @param[in] literalValue the literal value of the criterion
-     * @param[out] error string containing error information we can provide to client
-     * @return true if succeed false otherwise
-     */
-    virtual bool addValuePair(int numericalValue,
-                              const std::string& literalValue,
-                              std::string& error) = 0;
 
     /** Retrieve the numerical value from the literal representation of the criterion type.
      *
