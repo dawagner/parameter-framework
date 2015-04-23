@@ -40,7 +40,7 @@
 using std::string;
 
 CSelectionCriterionRule::CSelectionCriterionRule() :
-    _pSelectionCriterion(NULL), mMatchesWhenVerb(""), mMatchState{0}
+    _pSelectionCriterion(NULL), mMatchesWhenVerb(""), mMatchState{}
 {
 }
 
@@ -96,6 +96,10 @@ bool CSelectionCriterionRule::parse(CRuleParser& ruleParser, string& strError)
         return false;
     }
 
+    if (strValue == "none") {
+        mMatchState.clear();
+        return true;
+    }
     // Value
     int numericalValue;
     if (!_pSelectionCriterion->getNumericalValue(strValue, numericalValue)) {
@@ -170,6 +174,10 @@ bool CSelectionCriterionRule::fromXml(const CXmlElement& xmlElement, CXmlSeriali
     // Get Value
     string strValue = xmlElement.getAttributeString("Value");
 
+    if (strValue == "none") {
+        mMatchState.clear();
+        return true;
+    }
     int numericalValue;
     if (!_pSelectionCriterion->getNumericalValue(strValue, numericalValue)) {
 
