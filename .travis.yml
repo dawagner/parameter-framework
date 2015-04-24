@@ -1,6 +1,3 @@
-os:
-    - linux
-    - osx
 # Use travis docker infrastructure
 sudo: false
 # Use a recent OSX image
@@ -8,7 +5,6 @@ sudo: false
 # https://docs.travis-ci.com/user/languages/objective-c/#Supported-OS-X-iOS-SDK-versions
 osx_image: xcode7.2
 language: cpp
-cache: ccache
 
 env:
     global:
@@ -20,7 +16,6 @@ env:
 
 compiler:
     - gcc
-    - clang
 
 matrix:
     exclude:
@@ -45,12 +40,18 @@ addons:
         # https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
         packages:
             - swig
-            - valgrind
             - g++-4.8
             - cmake-data
             - cmake
             - python3-dev
-            - clang-format-3.8
+    coverity_scan:
+        project:
+            name: "dawagner/parameter-framework"
+        description: "Plugin-based and rule-based framework for managing parameters"
+        notification_email: david.wagner@intel.com
+        build_command_prepend: "cov-configure --comptype gcc --compiler ${CXX}; cov-configure --comptype gcc --compiler ${CC}; cmake -DCMAKE_PREFIX_PATH=$PREFIX ."
+        build_command: "make -j 12"
+        branch_pattern: coverity_scan
 
 before_install:
     # OS detection
@@ -80,78 +81,8 @@ install:
       fi
 
 before_script:
-    - coverage=OFF
     # Force the manualy installed 4.8 version as it is not the default
-    # Only enable coverage on gcc as clang segfault on coverage file write
-    # Workaround a bug with the ccache/g++-4.8.1 combination
-    - if [ "$CC" = "gcc" ]; then
-          export CC=gcc-4.8 CXX=g++-4.8;
-          coverage=ON;
-          export CCACHE_CPP2=1;
-      fi
-    - if $OSX; then export MY_CMAKE_OPTIONS+=" -DBUILD_TESTING=OFF -DPYTHON_BINDINGS=OFF"; fi
+    - export CC=gcc-4.8 CXX=g++-4.8;
 
-# how to build
 script:
-  # Check coding style
-  - if $LINUX; then (git ls-files | grep -E '\.[ch](pp)?$' |  xargs clang-format-3.8 -i &&
-        git diff --exit-code || { git reset --hard; false; }); fi
-
-  - ( mkdir build_debug && cd build_debug &&
-        cmake $MY_CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=${coverage} .. &&
-        make -j$(nproc) &&
-        (if $LINUX; then make ExperimentalTest ExperimentalMemCheck; fi) )
-  - ( mkdir build && cd build &&
-        cmake $MY_CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=Release .. &&
-        make -j$(nproc) &&
-        (if $LINUX; then make test; fi) &&
-        make install &&
-        (if $LINUX; then cpack --verbose -G DEB && dpkg --info *.deb; fi) )
-  - ( cd skeleton-subsystem &&
-        cmake $MY_CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=Release . &&
-        make -j$(nproc) &&
-        (if $LINUX; then make ExperimentalTest ExperimentalMemCheck; fi) &&
-        make install )
-  - if $LINUX; then ( cd tools/clientSimulator &&
-        echo "TODO - install the generated .deb instead of using \$HOME/install."
-             "This would permit to test the packaging" &&
-        cmake $MY_CMAKE_OPTIONS . &&
-        make &&
-        make install ); fi
-  # Check that all installed files are in a component (no "unspecified
-  # component" archive created)
-  - (cd build && cpack -G TGZ -D CPACK_ARCHIVE_COMPONENT_INSTALL=ON &&
-     [ ! -e "*-Unspecified.tar.gz" ])
-  # Keep this last
-  - ( mkdir build_less_features && cd build_less_features &&
-        rm -rf $PREFIX/asio-1.10.6 &&
-        cmake $MY_CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=Debug
-        -DNETWORKING=OFF -DPYTHON_BINDINGS=OFF -DC_BINDINGS=OFF .. &&
-        make -j$(nproc) &&
-        (if $LINUX; then make test; fi) )
-
-after_success:
-    # Push coverage info on codecov.io.
-    # Ignore generated files, samples and tests
-    - if [ "${coverage}" = "ON" ]; then
-          $HOME/codecov
-               -g "*/build_debug/bindings/python/*"
-               -g "*/build_debug/CMakeFiles/*"
-               -g "*/build/*"
-               -g "*/install/*"
-               -g "*/skeleton-subsystem/*"
-               -g "*/tools/clientSimulator/*"
-               -g "*/test/test-subsystem/*"
-               -g "*/test/introspection-subsystem/*"
-               -g "*/test/functional-tests/*"
-               -g "*/test/tmpfile/*"
-               -g "*/test/tokenizer/*"
-               -g "*/bindings/c/Test.cpp"
-               -g "*/utility/test/*"
-               -x /usr/bin/gcov-4.8
-               -a '\--long-file-names --preserve-paths';
-      fi
-
-notifications:
-  irc:
-    - "chat.freenode.net#parameter-framework"
+    - echo "ok"
