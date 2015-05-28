@@ -124,7 +124,7 @@ CriterionInterface::State Criterion::getState() const
     return mState;
 }
 
-std::string Criterion::getCriterionName() const
+std::string Criterion::getName() const
 {
     return mName;
 }

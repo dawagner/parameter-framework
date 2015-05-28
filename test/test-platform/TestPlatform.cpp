@@ -172,7 +172,7 @@ bool CTestPlatform::load(std::string& strError)
 }
 
 //////////////// Remote command parsers
-/// Selection Criterion
+/// Criterion
 CTestPlatform::CommandReturn
 CTestPlatform::createExclusiveCriterionFromStateList(const IRemoteCommand& remoteCommand,
                                                      string& strResult)
@@ -252,7 +252,7 @@ CTestPlatform::CommandReturn CTestPlatform::setCriterionState(
     std::string strCriterionName = remoteCommand.getArgument(0);
 
     CriterionInterface* pCriterion =
-        _pParameterMgrPlatformConnector->getSelectionCriterion(strCriterionName);
+        _pParameterMgrPlatformConnector->getCriterion(strCriterionName);
 
     if (!pCriterion) {
 
