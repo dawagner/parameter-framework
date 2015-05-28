@@ -100,16 +100,14 @@ bool CSelectionCriterionRule::parse(CRuleParser& ruleParser, string& strError)
         mMatchState.clear();
         return true;
     }
-    // Value
-    int numericalValue;
-    if (!_pSelectionCriterion->getNumericalValue(strValue, numericalValue)) {
+    if (!_pSelectionCriterion->isValueAvailable(strValue)) {
 
         strError = "Value error: \"" + strValue + "\" is not part of criterion \"" +
                    _pSelectionCriterion->getCriterionName() + "\"";
 
         return false;
     }
-    mMatchState = {numericalValue};
+    mMatchState = {strValue};
 
     return true;
 }
@@ -124,10 +122,8 @@ void CSelectionCriterionRule::dump(string& strResult) const
     strResult += mMatchesWhenVerb;
     strResult += " ";
     // Value
-    string strValue;
     assert(!mMatchState.empty());
-    _pSelectionCriterion->getLiteralValue(*mMatchState.begin(), strValue);
-    strResult += strValue;
+    strResult += *mMatchState.begin();
 }
 
 // Rule check
@@ -178,14 +174,13 @@ bool CSelectionCriterionRule::fromXml(const CXmlElement& xmlElement, CXmlSeriali
         mMatchState.clear();
         return true;
     }
-    int numericalValue;
-    if (!_pSelectionCriterion->getNumericalValue(strValue, numericalValue)) {
+    if (!_pSelectionCriterion->isValueAvailable(strValue)) {
 
         xmlDomainImportContext.setError("Wrong Value attribute value " + strValue + " in " + getKind() + " " + xmlElement.getPath());
 
         return false;
     }
-    mMatchState = {numericalValue};
+    mMatchState = {strValue};
 
     // Done
     return true;
@@ -205,10 +200,5 @@ void CSelectionCriterionRule::toXml(CXmlElement& xmlElement, CXmlSerializingCont
     xmlElement.setAttributeString("MatchesWhen", mMatchesWhenVerb);
 
     // Set Value
-    string strValue;
-
-    assert(!mMatchState.empty());
-    _pSelectionCriterion->getLiteralValue(*mMatchState.begin(), strValue);
-
-    xmlElement.setAttributeString("Value", strValue);
+    xmlElement.setAttributeString("Value", *mMatchState.begin());
 }
