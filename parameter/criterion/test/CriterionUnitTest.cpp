@@ -263,7 +263,6 @@ struct CriterionTest : public LoggingTest {
                     THEN("State should have been updated")
                     {
                         CHECK(criterion.getState() == CriterionInterface::State{value});
-                        CHECK(criterion.getFormattedState() == value);
                     }
                     THEN("Criterion should be modified")
                     {
@@ -326,10 +325,8 @@ struct CriterionTest : public LoggingTest {
             {
                 if (mIsInclusive) {
                     CHECK(criterion.getState() == CriterionInterface::State{});
-                    CHECK(criterion.getFormattedState() == "none");
                 } else {
                     CHECK(criterion.getState() == CriterionInterface::State{"C0"});
-                    CHECK(criterion.getFormattedState() == "C0");
                 }
             }
         }
@@ -438,8 +435,7 @@ struct CriterionTest : public LoggingTest {
                     REQUIRE_SUCCESS(criterion.setState(validState, error), error);
                     THEN("Formatted state contains all set values")
                     {
-                        std::string formattedState = "a|b|c";
-                        CHECK(criterion.getFormattedState() == formattedState);
+                        CHECK(criterion.getState() == validState);
                     }
                 }
                 WHEN("Setting a mask containing unknown values")
@@ -558,7 +554,6 @@ SCENARIO_METHOD(CriterionTest, "Criterion lifecycle", "[criterion]")
                 THEN("Default state is set")
                 {
                     CHECK(criterion.getState() == CriterionInterface::State{});
-                    CHECK(criterion.getFormattedState() == "none");
                 }
 
                 checkCriterionBasicBehavior(criterion, criterionName, values);

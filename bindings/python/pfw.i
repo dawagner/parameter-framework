@@ -217,7 +217,6 @@ public:
     virtual bool setState(const CriterionInterface::State& state, std::string& error) = 0;
     virtual CriterionInterface::State getState() const = 0;
     virtual std::string getName() const = 0;
-    virtual std::string getFormattedState() const = 0;
 
 protected:
     virtual ~CriterionInterface() {}
