@@ -41,7 +41,7 @@
 #include "RemoteProcessorServer.h"
 
 using std::string;
-using core::criterion::CriterionInterface;
+using core::criterion::Criterion;
 
 class CParameterMgrPlatformConnectorLogger : public CParameterMgrPlatformConnector::ILogger
 {
@@ -251,7 +251,7 @@ CTestPlatform::CommandReturn CTestPlatform::setCriterionState(
     // Get criterion name
     std::string strCriterionName = remoteCommand.getArgument(0);
 
-    CriterionInterface* pCriterion =
+    Criterion* pCriterion =
         _pParameterMgrPlatformConnector->getCriterion(strCriterionName);
 
     if (!pCriterion) {
@@ -264,7 +264,7 @@ CTestPlatform::CommandReturn CTestPlatform::setCriterionState(
     // Get substate number, the first argument (index 0) is the criterion name
     uint32_t uiNbSubStates = remoteCommand.getArgumentCount() - 1;
 
-    core::criterion::CriterionInterface::State state{};
+    core::criterion::Criterion::State state{};
     for (uint32_t i = 1; i <= uiNbSubStates; i++) {
         state.emplace(remoteCommand.getArgument(i));
     }
@@ -300,7 +300,7 @@ bool CTestPlatform::createExclusiveCriterionFromStateList(const string& name,
     uint32_t nbStates = remoteCommand.getArgumentCount() - 1;
 
     using namespace core::criterion;
-    CriterionInterface::Values values;
+    Criterion::Values values;
 
     for (uint32_t state = 0; state < nbStates; state++) {
 
@@ -308,7 +308,7 @@ bool CTestPlatform::createExclusiveCriterionFromStateList(const string& name,
         values.emplace_back(value);
     }
 
-    CriterionInterface* criterion =
+    Criterion* criterion =
         _pParameterMgrPlatformConnector->createExclusiveCriterion(name, values, result);
 
     if (criterion == nullptr) {
@@ -326,7 +326,7 @@ bool CTestPlatform::createInclusiveCriterionFromStateList(const string& name,
     uint32_t nbStates = remoteCommand.getArgumentCount() - 1;
 
     using namespace core::criterion;
-    CriterionInterface::Values values;
+    Criterion::Values values;
 
     for (uint32_t state = 0; state < nbStates; state++) {
 
@@ -334,7 +334,7 @@ bool CTestPlatform::createInclusiveCriterionFromStateList(const string& name,
         values.emplace_back(value);
     }
 
-    CriterionInterface* criterion =
+    Criterion* criterion =
         _pParameterMgrPlatformConnector->createInclusiveCriterion(name, values, result);
 
     if (criterion == nullptr) {
@@ -348,12 +348,12 @@ bool CTestPlatform::createInclusiveCriterionFromStateList(const string& name,
 bool CTestPlatform::createExclusiveCriterion(const string& name, uint32_t nbStates, string& result)
 {
     using namespace core::criterion;
-    CriterionInterface::Values values;
+    Criterion::Values values;
 
     for (uint32_t state = 0; state < nbStates; state++) {
         values.emplace_back("State_" + std::to_string(state));
     }
-    CriterionInterface* criterion =
+    Criterion* criterion =
         _pParameterMgrPlatformConnector->createExclusiveCriterion(name, values, result);
 
     if (criterion == nullptr) {
@@ -366,7 +366,7 @@ bool CTestPlatform::createExclusiveCriterion(const string& name, uint32_t nbStat
 bool CTestPlatform::createInclusiveCriterion(const string& name, uint32_t nbStates, string& result)
 {
     using namespace core::criterion;
-    CriterionInterface::Values values;
+    Criterion::Values values;
 
     if (nbStates > 32) {
 
@@ -378,7 +378,7 @@ bool CTestPlatform::createInclusiveCriterion(const string& name, uint32_t nbStat
     for (uint32_t state = 0; state < nbStates; state++) {
         values.emplace_back("State_0x" + std::to_string(1 << state));
     }
-    CriterionInterface* criterion =
+    Criterion* criterion =
         _pParameterMgrPlatformConnector->createInclusiveCriterion(name, values, result);
 
     if (criterion == nullptr) {

@@ -114,9 +114,9 @@ public:
      *                   undefined otherwise
      * @return raw pointer on the created criterion, nullptr if the method fail
      */
-    core::criterion::Criterion*
+    core::criterion::internal::Criterion*
     createExclusiveCriterion(const std::string& name,
-                             const core::criterion::CriterionInterface::Values& values,
+                             const core::criterion::Criterion::Values& values,
                              std::string& error);
 
     /** Create a new Inclusive criterion
@@ -127,9 +127,9 @@ public:
      *                   undefined otherwise
      * @return raw pointer on the created criterion, nullptr if the method fail
      */
-    core::criterion::Criterion*
+    core::criterion::internal::Criterion*
     createInclusiveCriterion(const std::string& name,
-                             const core::criterion::CriterionInterface::Values& values,
+                             const core::criterion::Criterion::Values& values,
                              std::string& error);
 
     /** Criterion retrieval
@@ -137,7 +137,7 @@ public:
      * @param[in] strName the criterion name
      * @return the pointer on the desired criterion, nullptr otherwise
      */
-    core::criterion::Criterion* getCriterion(const std::string& strName);
+    core::criterion::internal::Criterion* getCriterion(const std::string& strName);
 
     // Configuration application
     void applyConfigurations();
@@ -763,7 +763,7 @@ private:
     CParameterFrameworkConfiguration _pfwConfiguration;
 
     /** Selection Criteria used in application rules */
-    core::criterion::Criteria _criteria;
+    core::criterion::internal::Criteria _criteria;
 
     /** Subsystems handler */
     CSystemClass _systemClass;

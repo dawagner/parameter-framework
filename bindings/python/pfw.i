@@ -82,17 +82,17 @@ public:
 
     void setLogger(ILogger* pLogger);
 
-    core::criterion::CriterionInterface*
+    core::criterion::Criterion*
     createExclusiveCriterion(const std::string& name,
-                             const core::criterion::CriterionInterface::Values& values,
+                             const core::criterion::Criterion::Values& values,
                              std::string& errorOutput);
 
-    core::criterion::CriterionInterface*
+    core::criterion::Criterion*
     createInclusiveCriterion(const std::string& name,
-                             const core::criterion::CriterionInterface::Values& values,
+                             const core::criterion::Criterion::Values& values,
                              std::string& errorOutput);
 
-    core::criterion::CriterionInterface* getCriterion(const std::string& name);
+    core::criterion::Criterion* getCriterion(const std::string& name);
 
     // Configuration application
     void applyConfigurations();
@@ -207,19 +207,19 @@ namespace core
 namespace criterion
 {
 
-class CriterionInterface
+class Criterion
 {
 %{
-#include <criterion/client/CriterionInterface.h>
+#include <criterion/client/Criterion.h>
 %}
 
 public:
-    virtual bool setState(const CriterionInterface::State& state, std::string& error) = 0;
-    virtual CriterionInterface::State getState() const = 0;
+    virtual bool setState(const Criterion::State& state, std::string& error) = 0;
+    virtual Criterion::State getState() const = 0;
     virtual std::string getName() const = 0;
 
 protected:
-    virtual ~CriterionInterface() {}
+    virtual ~Criterion() {}
 };
 
 } /** criterion namespace */

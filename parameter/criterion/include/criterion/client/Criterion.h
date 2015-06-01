@@ -41,7 +41,7 @@ namespace criterion
 /** Client criterion interface used for interacting with the system state
  * Allows client to set or retrieve a Criterion state.
  */
-class CriterionInterface
+class Criterion
 {
 public:
     /** Type which represent a criterion state part */
@@ -76,7 +76,7 @@ public:
     virtual std::string getName() const = 0;
 
 protected:
-    virtual ~CriterionInterface() {}
+    virtual ~Criterion() {}
 };
 
 } /** criterion namespace */

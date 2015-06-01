@@ -36,6 +36,8 @@ namespace core
 {
 namespace criterion
 {
+namespace internal
+{
 
 Criteria::Criteria() : mCriteria()
 {
@@ -53,7 +55,7 @@ Criterion* Criteria::getCriterionPointer(const std::string& name) const
 }
 
 Criterion* Criteria::createExclusiveCriterion(const std::string& name,
-                                              const CriterionInterface::Values& values,
+                                              const criterion::Criterion::Values& values,
                                               core::log::Logger& logger,
                                               std::string& error)
 {
@@ -61,7 +63,7 @@ Criterion* Criteria::createExclusiveCriterion(const std::string& name,
 }
 
 Criterion* Criteria::createInclusiveCriterion(const std::string& name,
-                                              const CriterionInterface::Values& values,
+                                              const criterion::Criterion::Values& values,
                                               core::log::Logger& logger,
                                               std::string& error)
 {
@@ -107,7 +109,7 @@ void Criteria::toXml(CXmlElement& xmlElement,
 
 template<class CriterionType>
 Criterion* Criteria::addCriterion(const std::string& name,
-                                  const CriterionInterface::Values& values,
+                                  const criterion::Criterion::Values& values,
                                   core::log::Logger& logger,
                                   std::string& error)
 {
@@ -122,5 +124,6 @@ Criterion* Criteria::addCriterion(const std::string& name,
     }
 }
 
+} /** internal namespace */
 } /** criterion namespace */
 } /** core namespace */

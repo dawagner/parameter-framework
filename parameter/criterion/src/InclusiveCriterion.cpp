@@ -37,11 +37,13 @@ namespace core
 {
 namespace criterion
 {
+namespace internal
+{
 
 const std::string InclusiveCriterion::gDelimiter = "|";
 
 InclusiveCriterion::InclusiveCriterion(const std::string& name,
-                                       const CriterionInterface::Values& values,
+                                       const criterion::Criterion::Values& values,
                                        core::log::Logger& logger)
     : Criterion(name, logger, values, {},
                 {{"Includes", [&](const State& state) {
@@ -97,5 +99,6 @@ bool InclusiveCriterion::setState(const State& state, std::string& error)
     return true;
 }
 
+} /** internal namespace */
 } /** criterion namespace */
 } /** core namespace */

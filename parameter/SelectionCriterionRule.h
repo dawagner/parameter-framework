@@ -63,7 +63,7 @@ protected:
     virtual void logValue(std::string& strValue, CErrorContext& errorContext) const;
 private:
     // Selection criterion
-    const core::criterion::Criterion* _pSelectionCriterion;
+    const core::criterion::internal::Criterion* _pSelectionCriterion;
 
     /** Method name used to match the criterion state
      *
@@ -74,6 +74,6 @@ private:
     std::string mMatchesWhenVerb;
 
     /** Criterion State to match to validate the rule */
-    core::criterion::CriterionInterface::State mMatchState;
+    core::criterion::Criterion::State mMatchState;
 };
 

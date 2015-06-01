@@ -35,6 +35,8 @@ namespace core
 {
 namespace criterion
 {
+namespace internal
+{
 
 /** Criterion we can take several state values at the same time */
 class InclusiveCriterion final : public Criterion
@@ -45,10 +47,10 @@ public:
      *  @param[in] logger the application main logger
      */
     InclusiveCriterion(const std::string& name,
-                       const CriterionInterface::Values& values,
+                       const criterion::Criterion::Values& values,
                        core::log::Logger& logger);
 
-    /** @see CriterionInterface */
+    /** @see Criterion */
     bool setState(const State& state, std::string& error) override;
 
 private:
@@ -64,5 +66,6 @@ private:
     static const std::string gDelimiter;
 };
 
+} /** internal namespace */
 } /** criterion namespace */
 } /** core namespace */

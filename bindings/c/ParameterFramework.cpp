@@ -40,12 +40,12 @@
 #include <cstdlib>
 
 using std::string;
-using core::criterion::CriterionInterface;
+using core::criterion::Criterion;
 
 /** Rename long pfw types to short ones in pfw namespace. */
 namespace pfw
 {
-    typedef std::map<string, CriterionInterface *> Criteria;
+    typedef std::map<string, Criterion*> Criteria;
     typedef CParameterMgrPlatformConnector Pfw;
 }
 
@@ -187,13 +187,13 @@ bool PfwHandler::createCriteria(const PfwCriterion criteriaArray[], size_t crite
         }
 
         // Create criterion values
-        CriterionInterface::Values values;
+        Criterion::Values values;
         for (size_t valueIndex = 0; criterion.values[valueIndex] != NULL; ++valueIndex) {
             values.emplace_back(criterion.values[valueIndex]);
         }
         // Create criterion
         string error;
-        CriterionInterface *newCriterion = (criterion.inclusive ?
+        Criterion*newCriterion = (criterion.inclusive ?
                 pfw->createInclusiveCriterion(criterion.name, values, error) :
                 pfw->createExclusiveCriterion(criterion.name, values, error));
         if (newCriterion == nullptr) {
@@ -244,7 +244,7 @@ const char *pfwGetLastError(const PfwHandler *handle)
     return handle == NULL ? NULL : handle->lastStatus.msg().c_str();
 }
 
-static CriterionInterface *getCriterion(const pfw::Criteria &criteria, const string &name)
+static Criterion *getCriterion(const pfw::Criteria &criteria, const string &name)
 {
     pfw::Criteria::const_iterator it = criteria.find(name);
     return it == criteria.end() ? NULL : it->second;
@@ -262,11 +262,11 @@ bool pfwSetCriterion(PfwHandler *handle, const char name[], const char **values)
         return status.failure("Can not set criterion \"" + string(name) +
                               "\" as the parameter framework is not started.");
     }
-    CriterionInterface *criterion = getCriterion(handle->criteria, name);
+    Criterion *criterion = getCriterion(handle->criteria, name);
     if (criterion == NULL) {
         return status.failure("Can not set criterion " + string(name) + " as does not exist");
     }
-    CriterionInterface::State state{};
+    Criterion::State state{};
     for (size_t valueIndex = 0; values[valueIndex] != NULL; ++valueIndex) {
         state.emplace(values[valueIndex]);
     }
@@ -285,12 +285,12 @@ const char **pfwGetCriterion(const PfwHandler *handle, const char name[])
                        "\" as the parameter framework is not started.");
         return NULL;
     }
-    CriterionInterface *criterion = getCriterion(handle->criteria, name);
+    Criterion *criterion = getCriterion(handle->criteria, name);
     if (criterion == NULL) {
         status.failure("Can not get criterion " + string(name) + " as it does not exist");
         return NULL;
     }
-    CriterionInterface::State state = criterion->getState();
+    Criterion::State state = criterion->getState();
 
     // Allocating one slot for each criterion value plus one for the NULL end delimiter
     const char **values = static_cast<const char**>(malloc((state.size() + 1) * sizeof(char*)));

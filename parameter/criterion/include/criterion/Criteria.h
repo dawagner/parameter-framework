@@ -42,6 +42,8 @@ namespace core
 {
 namespace criterion
 {
+namespace internal
+{
 
 /** Criteria Handler */
 class Criteria : public IXmlSource
@@ -59,7 +61,7 @@ public:
      * @return raw pointer on the created criterion, nullptr in case of failure
      */
     Criterion* createExclusiveCriterion(const std::string& name,
-                                        const CriterionInterface::Values& values,
+                                        const criterion::Criterion::Values& values,
                                         core::log::Logger& logger,
                                         std::string& error);
 
@@ -73,7 +75,7 @@ public:
      * @return raw pointer on the created criterion, nullptr in case of failure
      */
     Criterion* createInclusiveCriterion(const std::string& name,
-                                        const CriterionInterface::Values& values,
+                                        const criterion::Criterion::Values& values,
                                         core::log::Logger& logger,
                                         std::string& error);
 
@@ -146,7 +148,7 @@ private:
      */
     template<class CriterionType>
     Criterion* addCriterion(const std::string& name,
-                            const CriterionInterface::Values& values,
+                            const criterion::Criterion::Values& values,
                             core::log::Logger& logger,
                             std::string& error);
 
@@ -154,5 +156,6 @@ private:
     CriteriaMap mCriteria;
 };
 
+} /** internal namespace */
 } /** criterion namespace */
 } /** core namespace */

@@ -31,7 +31,7 @@
 
 #include "ParameterHandle.h"
 #include "ParameterMgrLoggerForward.h"
-#include <criterion/client/CriterionInterface.h>
+#include <criterion/client/Criterion.h>
 
 #include <string>
 #include <list>
@@ -80,9 +80,9 @@ public:
      *                   undefined otherwise
      * @return raw pointer on the criterion interface, nullptr if the method fail
      */
-    core::criterion::CriterionInterface*
+    core::criterion::Criterion*
     createExclusiveCriterion(const std::string& name,
-                             const core::criterion::CriterionInterface::Values& values,
+                             const core::criterion::Criterion::Values& values,
                              std::string& error);
 
     /** Create a new Inclusive criterion
@@ -95,9 +95,9 @@ public:
      *                   undefined otherwise
      * @return raw pointer on the criterion interface, nullptr if the method fail
      */
-    core::criterion::CriterionInterface*
+    core::criterion::Criterion*
     createInclusiveCriterion(const std::string& name,
-                             const core::criterion::CriterionInterface::Values& values,
+                             const core::criterion::Criterion::Values& values,
                              std::string& error);
 
     /** Criterion retrieval
@@ -105,7 +105,7 @@ public:
      * @param[in] strName the criterion name
      * @return the pointer on the desired criterion, nullptr otherwise
      */
-    core::criterion::CriterionInterface* getCriterion(const std::string& strName);
+    core::criterion::Criterion* getCriterion(const std::string& strName);
 
     /** Is the remote interface forcefully disabled ?
      */

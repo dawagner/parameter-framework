@@ -39,9 +39,11 @@ namespace core
 {
 namespace criterion
 {
+namespace internal
+{
 
 Criterion::Criterion(const std::string& name,
-                     const CriterionInterface::Values& values,
+                     const criterion::Criterion::Values& values,
                      core::log::Logger& logger)
     : Criterion(name, logger, values, (values.empty() ? State{""} : State{*values.begin()}), {})
 {
@@ -53,7 +55,7 @@ Criterion::Criterion(const std::string& name,
 
 Criterion::Criterion(const std::string& name,
                      core::log::Logger& logger,
-                     const CriterionInterface::Values& values,
+                     const criterion::Criterion::Values& values,
                      const State& defaultState,
                      const MatchMethods& derivedMatchMethods)
     : mValues(values.begin(), values.end()),
@@ -119,7 +121,7 @@ void Criterion::stateModificationsEvent()
     mNbModifications++;
 }
 
-CriterionInterface::State Criterion::getState() const
+criterion::Criterion::State Criterion::getState() const
 {
     return mState;
 }
@@ -241,5 +243,6 @@ bool Criterion::isMatchMethodAvailable(const std::string& method) const
     return mMatchMethods.count(method) == 1;
 }
 
+} /** internal namespace */
 } /** criterion namespace */
 } /** core namespace */
