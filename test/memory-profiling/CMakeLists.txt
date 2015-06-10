@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2015, Intel Corporation
+# Copyright (c) 2015, Intel Corporation
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
@@ -26,9 +26,14 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-add_subdirectory(test-platform)
-add_subdirectory(test-fixed-point-parameter)
-add_subdirectory(tokenizer)
-add_subdirectory(functional-tests)
-add_subdirectory(test-subsystem)
-add_subdirectory(memory-profiling)
+add_executable(pfw-memory-profiling main.cpp)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+include_directories(
+    "${PROJECT_SOURCE_DIR}/utility"
+    "${PROJECT_SOURCE_DIR}/parameter/criterion/include"
+    "${PROJECT_SOURCE_DIR}/parameter/include")
+
+target_link_libraries(pfw-memory-profiling parameter)
+
+install(TARGETS pfw-memory-profiling RUNTIME DESTINATION bin)
