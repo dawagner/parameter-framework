@@ -87,7 +87,7 @@ class TestCases(PfwTestCase):
         log.D(self.test_Nominal_Case.__doc__)
         log.I("FP32_Q8.20 parameter in nominal case = -128.123456")
         value = "-128.123456"
-        hex_value = "0xbff03298"
+        hex_value = "0xf7fe0653"
         #Set parameter value
         out, err = self.pfw.sendCmd("setParameter", self.param_name, value)
         assert err == None, log.E("when setting parameter %s : %s"
@@ -101,7 +101,7 @@ class TestCases(PfwTestCase):
         assert round(float(out),6) == float(value), log.F("BLACKBOARD : Incorrect value for %s, expected: %s, found: %s"
                                                           % (self.param_name, value, out))
         #Check parameter value on filesystem
-        assert open(os.environ["PFW_RESULT"] + "/FP32_Q8.20").read()[:-1] == hex_value, log.F("FILESYSTEM : parameter update error")
+        self.assertEqual(open(os.environ["PFW_RESULT"] + "/FP32_Q8.20").read()[:-1], hex_value)
         log.I("test OK")
 
     def test_TypeMin(self):
@@ -125,7 +125,7 @@ class TestCases(PfwTestCase):
         log.D(self.test_TypeMin.__doc__)
         log.I("FP32_Q8.20 parameter min value = -256")
         value = "-256"
-        hex_value = "0x80000000"
+        hex_value = "0xf0000000"
         #Set parameter value
         out, err = self.pfw.sendCmd("setParameter", self.param_name, value)
         assert err == None, log.E("when setting parameter %s : %s"
@@ -138,7 +138,7 @@ class TestCases(PfwTestCase):
         assert round(float(out),6) == float(value), log.F("BLACKBOARD : Incorrect value for %s, expected: %s, found: %s"
                                                           % (self.param_name, value, out))
         #Check parameter value on filesystem
-        assert open(os.environ["PFW_RESULT"] + "/FP32_Q8.20").read()[:-1] == hex_value, log.F("FILESYSTEM : parameter update error")
+        self.assertEqual(open(os.environ["PFW_RESULT"] + "/FP32_Q8.20").read()[:-1], hex_value)
         log.I("test OK")
 
     def test_TypeMin_Overflow(self):
@@ -195,7 +195,7 @@ class TestCases(PfwTestCase):
         log.D(self.test_TypeMax.__doc__)
         log.I("FP32_Q8.20 parameter max value = 255.999999")
         value = "255.999999"
-        hex_value = "0x7ffffff8"
+        hex_value = "0xfffffff"
         #Set parameter value
         out, err = self.pfw.sendCmd("setParameter", self.param_name, value)
         assert err == None, log.E("when setting parameter %s : %s"
@@ -209,7 +209,7 @@ class TestCases(PfwTestCase):
         assert round(float(out),6) == float(value), log.F("BLACKBOARD : Incorrect value for %s, expected: %s, found: %s"
                                                           % (self.param_name, value, out))
         #Check parameter value on filesystem
-        assert open(os.environ["PFW_RESULT"] + "/FP32_Q8.20").read()[:-1] == hex_value, log.F("FILESYSTEM : parameter update error")
+        self.assertEqual(open(os.environ["PFW_RESULT"] + "/FP32_Q8.20").read()[:-1], hex_value)
         log.I("test OK")
 
     def test_TypeMax_Overflow(self):
