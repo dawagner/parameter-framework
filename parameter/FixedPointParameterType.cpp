@@ -135,7 +135,7 @@ bool CFixedPointParameterType::toBlackboard(const string& strValue, uint32_t& ui
         }
         return convertFromDecimal(strValue, uiValue, parameterAccessContext);
     }
-    return convertFromQif(strValue, uiValue, parameterAccessContext);
+    return convertFromReal(strValue, uiValue, parameterAccessContext);
 }
 
 void CFixedPointParameterType::setOutOfRangeError(const string& strValue, CParameterAccessContext& parameterAccessContext) const
@@ -300,7 +300,7 @@ bool CFixedPointParameterType::convertFromDecimal(const string& strValue, uint32
     return true;
 }
 
-bool CFixedPointParameterType::convertFromQif(const string& strValue, uint32_t& uiValue,
+bool CFixedPointParameterType::convertFromReal(const string& strValue, uint32_t& uiValue,
                                               CParameterAccessContext& parameterAccessContext) const
 {
     double dData = 0;
