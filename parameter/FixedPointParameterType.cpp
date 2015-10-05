@@ -336,20 +336,12 @@ int32_t CFixedPointParameterType::doubleToBinaryQif(double dValue) const
     // For Qi.f number, multiply by 2^f and round to the nearest integer
     int32_t iData = static_cast<int32_t>(round(dValue * double(1UL << _uiFractional)));
 
-    // Since we support numbers with sizes lower than the underlying storage,
-    // left justify the result:
-    // For a Signed Qi.f number stored on N bits, shift N - (i + f + 1) bits to
-    // the left (the rest of the bits aren't used)
-    iData <<= getSize() * 8 - getUtilSizeInBits();
-
     return iData;
 }
 
 
 double CFixedPointParameterType::binaryQifToDouble(int32_t iValue) const
 {
-    // Unjustify
-    iValue >>= getSize() * 8 - getUtilSizeInBits();
     return static_cast<double>(iValue) / double(1UL << _uiFractional);
 }
 
