@@ -24,7 +24,6 @@ init:
   - set PREFIX_PATH=%APPVEYOR_BUILD_FOLDER%\asio-1.10.6;%APPVEYOR_BUILD_FOLDER%\catch
   # Tell CMake where to install
   - set INSTALL=%HOMEPATH%\install
-  # legacy functional tests are bash specific
   - set CTEST_PARAMS=--output-on-failure
 
 install:

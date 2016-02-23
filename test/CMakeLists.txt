@@ -29,7 +29,6 @@
 add_subdirectory(catch)
 add_subdirectory(tmpfile)
 add_subdirectory(functional-tests)
-add_subdirectory(functional-tests-legacy)
 add_subdirectory(test-fixed-point-parameter)
 add_subdirectory(test-platform)
 add_subdirectory(test-subsystem)
