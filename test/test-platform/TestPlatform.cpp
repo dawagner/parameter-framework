@@ -34,103 +34,101 @@
 #include <errno.h>
 #include <convert.hpp>
 #include <sstream>
+#include "Memory.hpp"
 #include "TestPlatform.h"
+#include "BackgroundRemoteProcessorServer.h"
 
 using std::string;
 
 CTestPlatform::CTestPlatform(const string &strClass, uint16_t iPortNumber)
-    : mParameterMgrPlatformConnector(strClass), mLogger(), mRemoteProcessorServer(iPortNumber)
+    : mParameterMgrPlatformConnector(strClass), mLogger(),
+      mRemoteProcessorServer(
+          new BackgroundRemoteProcessorServer(iPortNumber, createCommandHandler(), true))
 {
     mParameterMgrPlatformConnector.setLogger(&mLogger);
-}
 
-CTestPlatform::~CTestPlatform()
-{
+    std::string error;
+    if (not mRemoteProcessorServer->start(error)) {
+        throw std::runtime_error(error);
+    }
 }
 
 CTestPlatform::CommandReturn CTestPlatform::exit(const IRemoteCommand & /*command*/,
                                                  string & /*strResult*/)
 {
-    mRemoteProcessorServer.stop();
+    mRemoteProcessorServer->stop();
 
     return CTestPlatform::CCommandHandler::EDone;
 }
 
-bool CTestPlatform::run(std::string &strError)
+CTestPlatform::UCommandHandler CTestPlatform::createCommandHandler()
 {
-    // Start remote processor server
-    if (!mRemoteProcessorServer.start(strError)) {
-
-        strError = "TestPlatform: Unable to start remote processor server: " + strError;
-        return false;
-    }
-
-    CCommandHandler commandHandler(this);
+    auto commandHandler = utility::make_unique<CCommandHandler>(this);
 
     // Add command parsers
-    commandHandler.addCommandParser("exit", &CTestPlatform::exit, 0, "", "Exit TestPlatform");
-    commandHandler.addCommandParser("createExclusiveSelectionCriterionFromStateList",
-                                    &CTestPlatform::createExclusiveSelectionCriterionFromStateList,
-                                    2, "<name> <stateList>",
-                                    "Create inclusive selection criterion from state name list");
-    commandHandler.addCommandParser("createInclusiveSelectionCriterionFromStateList",
-                                    &CTestPlatform::createInclusiveSelectionCriterionFromStateList,
-                                    2, "<name> <stateList>",
-                                    "Create exclusive selection criterion from state name list");
+    commandHandler->addCommandParser("exit", &CTestPlatform::exit, 0, "", "Exit TestPlatform");
+    commandHandler->addCommandParser("createExclusiveSelectionCriterionFromStateList",
+                                     &CTestPlatform::createExclusiveSelectionCriterionFromStateList,
+                                     2, "<name> <stateList>",
+                                     "Create inclusive selection criterion from state name list");
+    commandHandler->addCommandParser("createInclusiveSelectionCriterionFromStateList",
+                                     &CTestPlatform::createInclusiveSelectionCriterionFromStateList,
+                                     2, "<name> <stateList>",
+                                     "Create exclusive selection criterion from state name list");
 
-    commandHandler.addCommandParser("createExclusiveSelectionCriterion",
-                                    &CTestPlatform::createExclusiveSelectionCriterion, 2,
-                                    "<name> <nbStates>", "Create inclusive selection criterion");
-    commandHandler.addCommandParser("createInclusiveSelectionCriterion",
-                                    &CTestPlatform::createInclusiveSelectionCriterion, 2,
-                                    "<name> <nbStates>", "Create exclusive selection criterion");
+    commandHandler->addCommandParser("createExclusiveSelectionCriterion",
+                                     &CTestPlatform::createExclusiveSelectionCriterion, 2,
+                                     "<name> <nbStates>", "Create inclusive selection criterion");
+    commandHandler->addCommandParser("createInclusiveSelectionCriterion",
+                                     &CTestPlatform::createInclusiveSelectionCriterion, 2,
+                                     "<name> <nbStates>", "Create exclusive selection criterion");
 
-    commandHandler.addCommandParser("start", &CTestPlatform::startParameterMgr, 0, "",
-                                    "Start ParameterMgr");
+    commandHandler->addCommandParser("start", &CTestPlatform::startParameterMgr, 0, "",
+                                     "Start ParameterMgr");
 
-    commandHandler.addCommandParser("setCriterionState", &CTestPlatform::setCriterionState, 2,
-                                    "<name> <state>",
-                                    "Set the current state of a selection criterion");
-    commandHandler.addCommandParser(
+    commandHandler->addCommandParser("setCriterionState", &CTestPlatform::setCriterionState, 2,
+                                     "<name> <state>",
+                                     "Set the current state of a selection criterion");
+    commandHandler->addCommandParser(
         "applyConfigurations", &CTestPlatform::applyConfigurations, 0, "",
         "Apply configurations selected by current selection criteria states");
 
-    commandHandler.addCommandParser(
+    commandHandler->addCommandParser(
         "setFailureOnMissingSubsystem",
         &CTestPlatform::setter<&CParameterMgrPlatformConnector::setFailureOnMissingSubsystem>, 1,
         "true|false", "Set policy for missing subsystems, "
                       "either abort start or fallback on virtual subsystem.");
-    commandHandler.addCommandParser(
+    commandHandler->addCommandParser(
         "getMissingSubsystemPolicy",
         &CTestPlatform::getter<&CParameterMgrPlatformConnector::getFailureOnMissingSubsystem>, 0,
         "", "Get policy for missing subsystems, "
             "either abort start or fallback on virtual subsystem.");
 
-    commandHandler.addCommandParser(
+    commandHandler->addCommandParser(
         "setFailureOnFailedSettingsLoad",
         &CTestPlatform::setter<&CParameterMgrPlatformConnector::setFailureOnFailedSettingsLoad>, 1,
         "true|false",
         "Set policy for failed settings load, either abort start or continue without domains.");
-    commandHandler.addCommandParser(
+    commandHandler->addCommandParser(
         "getFailedSettingsLoadPolicy",
         &CTestPlatform::getter<&CParameterMgrPlatformConnector::getFailureOnFailedSettingsLoad>, 0,
         "", "Get policy for failed settings load, either abort start or continue without domains.");
 
-    commandHandler.addCommandParser(
+    commandHandler->addCommandParser(
         "setValidateSchemasOnStart",
         &CTestPlatform::setter<&CParameterMgrPlatformConnector::setValidateSchemasOnStart>, 1,
         "true|false", "Set policy for schema validation based on .xsd files (false by default).");
-    commandHandler.addCommandParser(
+    commandHandler->addCommandParser(
         "getValidateSchemasOnStart",
         &CTestPlatform::getter<&CParameterMgrPlatformConnector::getValidateSchemasOnStart>, 0, "",
         "Get policy for schema validation based on .xsd files.");
 
-    commandHandler.addCommandParser("getSchemaUri", &CTestPlatform::getSchemaUri, 0, "",
-                                    "Get the directory where schemas can be found.");
-    commandHandler.addCommandParser("setSchemaUri", &CTestPlatform::setSchemaUri, 1, "<directory>",
-                                    "Set the directory where schemas can be found.");
+    commandHandler->addCommandParser("getSchemaUri", &CTestPlatform::getSchemaUri, 0, "",
+                                     "Get the directory where schemas can be found.");
+    commandHandler->addCommandParser("setSchemaUri", &CTestPlatform::setSchemaUri, 1, "<directory>",
+                                     "Set the directory where schemas can be found.");
 
-    return mRemoteProcessorServer.process(commandHandler);
+    return commandHandler;
 }
 
 //////////////// Remote command parsers

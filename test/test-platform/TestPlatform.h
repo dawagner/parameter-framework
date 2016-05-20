@@ -31,27 +31,27 @@
 
 #include "ParameterMgrPlatformConnector.h"
 #include "RemoteCommandHandlerTemplate.h"
-#include "RemoteProcessorServer.h"
+#include "RemoteProcessorServerInterface.h"
 #include <string>
 #include <iostream>
 #include <list>
+#include <memory>
 
 class CParameterMgrPlatformConnectorLogger;
 class ISelectionCriterionInterface;
 
-class CTestPlatform
+class CTestPlatform final
 {
-    typedef TRemoteCommandHandlerTemplate<CTestPlatform> CCommandHandler;
+    using UCommandHandler = std::unique_ptr<TRemoteCommandHandlerTemplate<CTestPlatform>>;
+    using CCommandHandler = UCommandHandler::element_type;
     typedef CCommandHandler::CommandStatus CommandReturn;
 
 public:
     CTestPlatform(const std::string &strclass, uint16_t iPortNumber);
-    virtual ~CTestPlatform();
-
-    // Init
-    bool run(std::string &strError);
 
 private:
+    UCommandHandler createCommandHandler();
+
     //////////////// Remote command parsers
     /// Selection Criterion
     CommandReturn createExclusiveSelectionCriterionFromStateList(
@@ -160,5 +160,5 @@ private:
     } mLogger;
 
     // Remote Processor Server
-    CRemoteProcessorServer mRemoteProcessorServer;
+    std::unique_ptr<IRemoteProcessorServerInterface> mRemoteProcessorServer;
 };

@@ -36,6 +36,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <stdexcept>
 
 using std::cerr;
 using std::endl;
@@ -104,10 +105,11 @@ int main(int argc, char *argv[])
         return 3;
     }
 
-    string strError;
-    if (!CTestPlatform(filePath, portNumber).run(strError)) {
-
-        cerr << "Test-platform error:" << strError.c_str() << endl;
+    try {
+        // blocks until the remote processor server exits
+        CTestPlatform(filePath, portNumber);
+    } catch (std::exception &e) {
+        cerr << "Test-platform error:" << e.what() << endl;
         return -1;
     }
     return 0;
