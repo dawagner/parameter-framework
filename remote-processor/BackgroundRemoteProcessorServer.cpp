@@ -31,8 +31,9 @@
 #include "RemoteProcessorServer.h"
 
 BackgroundRemoteProcessorServer::BackgroundRemoteProcessorServer(
-    uint16_t uiPort, std::unique_ptr<IRemoteCommandHandler> &&commandHandler)
-    : _server(new CRemoteProcessorServer(uiPort)), mCommandHandler(std::move(commandHandler))
+    uint16_t uiPort, std::unique_ptr<IRemoteCommandHandler> &&commandHandler, bool synchronous)
+    : _server(new CRemoteProcessorServer(uiPort)), mCommandHandler(std::move(commandHandler)),
+      mSynchronous(synchronous)
 {
 }
 
@@ -49,13 +50,20 @@ bool BackgroundRemoteProcessorServer::start(std::string &error)
         return false;
     }
 
+    if (mSynchronous) {
+        // wait for the server to terminate
+        return mServerSuccess.get();
+    }
     return true;
 }
 
 void BackgroundRemoteProcessorServer::stop()
 {
     _server->stop();
-    mServerSuccess.wait();
+
+    if (not mSynchronous) {
+        mServerSuccess.wait();
+    }
 }
 
 BackgroundRemoteProcessorServer::~BackgroundRemoteProcessorServer()

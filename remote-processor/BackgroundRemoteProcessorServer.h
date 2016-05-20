@@ -41,7 +41,8 @@ class REMOTE_PROCESSOR_EXPORT BackgroundRemoteProcessorServer final
 {
 public:
     BackgroundRemoteProcessorServer(uint16_t uiPort,
-                                    std::unique_ptr<IRemoteCommandHandler> &&commandHandler);
+                                    std::unique_ptr<IRemoteCommandHandler> &&commandHandler,
+                                    bool synchronous = false);
 
     ~BackgroundRemoteProcessorServer() override;
 
@@ -52,5 +53,6 @@ public:
 private:
     std::unique_ptr<CRemoteProcessorServer> _server;
     std::unique_ptr<IRemoteCommandHandler> mCommandHandler;
+    bool mSynchronous;
     std::future<bool> mServerSuccess;
 };
