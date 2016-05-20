@@ -47,7 +47,7 @@ public:
 
     bool start(std::string &error) override;
 
-    bool stop() override;
+    void stop() override;
 
 private:
     std::unique_ptr<CRemoteProcessorServer> _server;

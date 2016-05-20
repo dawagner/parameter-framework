@@ -73,11 +73,9 @@ bool CRemoteProcessorServer::start(string &error)
     return true;
 }
 
-bool CRemoteProcessorServer::stop()
+void CRemoteProcessorServer::stop()
 {
     _io_service.stop();
-
-    return true;
 }
 
 void CRemoteProcessorServer::acceptRegister(IRemoteCommandHandler &commandHandler)

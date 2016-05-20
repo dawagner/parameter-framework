@@ -52,10 +52,10 @@ bool BackgroundRemoteProcessorServer::start(std::string &error)
     return true;
 }
 
-bool BackgroundRemoteProcessorServer::stop()
+void BackgroundRemoteProcessorServer::stop()
 {
     _server->stop();
-    return mServerSuccess.get();
+    mServerSuccess.wait();
 }
 
 BackgroundRemoteProcessorServer::~BackgroundRemoteProcessorServer()
