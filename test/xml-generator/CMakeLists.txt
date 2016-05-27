@@ -28,8 +28,6 @@
 
 if (BUILD_TESTING)
 
-    find_package(PythonInterp 2 REQUIRED)
-
     add_test(NAME xml-generator
              WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/tools/xmlGenerator
              COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test.py)

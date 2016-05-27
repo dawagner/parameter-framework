@@ -51,6 +51,11 @@ option(C_BINDINGS "Library to use the Parameter Framework using a C API" ON)
 option(FATAL_WARNINGS "Turn warnings into errors (-Werror flag)" ON)
 option(NETWORKING "Set to OFF in order to stub networking code" ON)
 
+# find the most recent Python version ...
+find_package(PythonInterp 3 REQUIRED)
+# ... and force the libs to be at the same version as the interpreter
+find_package(PythonLibs ${PYTHON_VERSION_STRING} EXACT REQUIRED)
+
 include(SetVersion.cmake)
 
 # Add FindLibXml2.cmake in cmake path so that `find_package(LibXml2)` will
@@ -126,6 +131,7 @@ endif()
 
 add_subdirectory(tools/xmlGenerator)
 add_subdirectory(tools/xmlValidator)
+add_subdirectory(tools/clientSimulator)
 
 add_subdirectory(bindings)
 

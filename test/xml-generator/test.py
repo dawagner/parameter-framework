@@ -1,4 +1,4 @@
-#! python2.7
+#!/usr/bin/env python
 # Copyright (c) 2015, Intel Corporation
 # All rights reserved.
 #
@@ -63,7 +63,7 @@ class Tester(object):
             self.command += ["--add-domains"] + testVector.domains
 
     def check(self, reference=None, expectedErrors=0):
-        process = subprocess.Popen(self.command, stdout=subprocess.PIPE)
+        process = subprocess.Popen(self.command, stdout=subprocess.PIPE, universal_newlines=True)
         actual = process.stdout.read().splitlines()
 
         if process.wait() != expectedErrors:
@@ -91,7 +91,7 @@ config_dir = os.path.join(basedir, "PFConfig")
 vector_dir = os.path.join(basedir, "testVector")
 class TestCase(unittest.TestCase):
     def setUp(self):
-        self.nominal_reference = open(os.path.join(vector_dir, "reference.xml")).read().splitlines()
+        self.nominal_reference = open(os.path.join(vector_dir, "reference.xml"), "rt").read().splitlines()
         self.nominal_pfconfig = PfConfig(os.path.join(config_dir, "configuration.xml"),
                                          os.path.join(config_dir, "criteria.txt"),
                                          os.path.join(basedir, "../../schemas"))

@@ -29,8 +29,6 @@
 # This test suite relies on remote-process - which isn't available when
 # networking is disabled
 if(BUILD_TESTING AND NETWORKING)
-    find_package(PythonInterp 2 REQUIRED)
-
     set(PFW_ROOT ${PROJECT_BINARY_DIR}/tmp/test-parameters)
     set(PFW_RESULT ${PFW_ROOT}/result)
 

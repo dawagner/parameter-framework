@@ -181,7 +181,6 @@ class TestCases(PfwTestCase):
         log.I("test setAutoSync %s : OK"%(value))
 
 
-    @unittest.expectedFailure
     def test_03_Manual_Sync_Case(self):
         """
         Testing getAutoSync nominal case

@@ -58,11 +58,11 @@ class RemoteCli(object):
         print("CMD  : %s" % sys_cmd)
 
         try:
-            p = subprocess.Popen(sys_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(sys_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         except OSError as error:
             return None, error.strerror
         out, err = p.communicate()
-        out = out.rstrip('\r\n')
+        out = out.rstrip('\n')
 
         if (expectSuccess != None):
             assert (p.returncode == 0) == expectSuccess, "Unexpected command result:\nexpectedSuccess=%s\nCMD=%s\nreturncode=%s\nstdout=%s\nstderr=%s" % (expectSuccess, sys_cmd, p.returncode, out, err)

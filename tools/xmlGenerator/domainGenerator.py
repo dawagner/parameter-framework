@@ -207,7 +207,8 @@ def main():
                             'verbose' if args.verbose else 'no-verbose',
                             'validate' if args.validate else 'no-validate',
                             args.schemas_dir],
-                           stdout=sys.stdout, stdin=subprocess.PIPE, stderr=sys.stderr)
+                           stdout=sys.stdout, stdin=subprocess.PIPE, stderr=sys.stderr,
+                           universal_newlines=True)
 
     initial_settings = None
     if args.initial_settings:

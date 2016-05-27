@@ -142,7 +142,7 @@ class TestCases(PfwTestCase):
         log.I("STR_CHAR128 parameter size max=128 character")
         value=""
         for i in range(self.size_max+1):
-            value=value+str(random.choice(string.letters))
+            value=value+str(random.choice(string.ascii_letters))
         param_check = open(os.environ["PFW_RESULT"] + "/STR_CHAR128").read()[:-1]
         #Set parameter value
         out, err = self.pfw.sendCmd("setParameter", self.param_name, value, expectSuccess=False)
@@ -170,7 +170,7 @@ class TestCases(PfwTestCase):
         log.I("STR_CHAR128 parameter initial state : string")
         value = ""
         for i in range(self.size_max-1):
-            value=value+str(random.choice(string.letters))
+            value=value+str(random.choice(string.ascii_letters))
         #Set parameter value
         out, err = self.pfw.sendCmd("setParameter", self.param_name, value)
         assert err == None, log.E("when setting parameter %s -> %s" % (self.param_name, err))

@@ -80,7 +80,6 @@ class TestCases(PfwTestCase):
         self.pfw.sendCmd("setTuningMode", "off")
 
 
-    @unittest.expectedFailure
     def test_Nominal_Case(self):
         """
         Testing BLOCK_PARAMETER in nominal case

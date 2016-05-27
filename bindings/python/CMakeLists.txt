@@ -42,11 +42,6 @@ endif()
 
 include(${SWIG_USE_FILE})
 
-# Force usage of Python 2.7.x ...
-find_package(PythonInterp 2.7 REQUIRED)
-
-# ... and force the libs to be at the same version as the interpreter
-find_package(PythonLibs ${PYTHON_VERSION_STRING} EXACT REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set_property(SOURCE pfw.i PROPERTY CPLUSPLUS ON)
