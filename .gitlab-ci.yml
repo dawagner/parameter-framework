@@ -7,7 +7,8 @@ variables:
     cmake_apt: "deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu/ trusty main"
     llvm_apt: "deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-3.8 main"
     LINUX: "true"
-    coverage: "ON"
+    gcov: "gcov"
+    coverage: "OFF"
 
 style:
   stage: build
@@ -21,6 +22,9 @@ style:
 
 gcc:
   stage: build
+  variables:
+    coverage: "ON"
+
   before_script:
     - echo "$cmake_apt" >> /etc/apt/sources.list
     - apt-key adv --keyserver keyserver.ubuntu.com --recv B118CD3C377DF930EDD06C67084ECFC5828AB726
@@ -28,6 +32,7 @@ gcc:
     - apt-get -y install cmake libxml2-dev valgrind catch libasio-dev python-dev python3-dev swig
   script:
     - ci/build.sh
+    - ci/coverage.sh
 
 clang:
   stage: build
